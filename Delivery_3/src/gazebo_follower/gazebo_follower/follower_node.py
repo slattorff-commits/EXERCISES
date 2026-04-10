@@ -68,7 +68,7 @@ class FollowerNode(Node):
 
         cmd = Twist()
         if dist > 0.5:
-            cmd.linear.x = min(0.6, 0.5 * dist)
+            cmd.linear.x = min(1.5, 0.8 * dist)
             cmd.angular.z = 2.0 * angle_err
         else:
             cmd.linear.x = 0.0
