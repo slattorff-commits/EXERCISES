@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="human_body">
+  <xacro:property name="torso_height" value="0.8"/>
+  <xacro:property name="torso_radius" value="0.18"/>
+  <xacro:property name="head_radius" value="0.18"/>
+  <xacro:property name="limb_length" value="0.7"/>
+  <xacro:property name="limb_radius" value="0.07"/>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${torso_height / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${torso_radius}" length="${torso_height}"/>
+      </geometry>
+      <material name="torso_gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="head_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${head_radius}"/>
+      </geometry>
+      <material name="skin">
+        <color rgba="0.95 0.8 0.7 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="neck_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="head_link"/>
+    <origin xyz="0 0 ${torso_height + head_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="left_arm_link">
+    <visual>
+      <origin xyz="0 0 ${limb_length / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${limb_radius}" length="${limb_length}"/>
+      </geometry>
+      <material name="arm_blue">
+        <color rgba="0.2 0.4 0.9 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="left_shoulder_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_arm_link"/>
+    <origin xyz="0 ${torso_radius + limb_radius} ${torso_height * 0.75}" rpy="0 0 1.5708"/>
+  </joint>
+
+  <link name="right_arm_link">
+    <visual>
+      <origin xyz="0 0 ${limb_length / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${limb_radius}" length="${limb_length}"/>
+      </geometry>
+      <material name="arm_green">
+        <color rgba="0.1 0.7 0.4 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="right_shoulder_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_arm_link"/>
+    <origin xyz="0 -${torso_radius + limb_radius} ${torso_height * 0.75}" rpy="0 0 -1.5708"/>
+  </joint>
+
+  <link name="left_leg_link">
+    <visual>
+      <origin xyz="0 0 -${limb_length / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${limb_radius}" length="${limb_length}"/>
+      </geometry>
+      <material name="leg_dark">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="left_hip_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_leg_link"/>
+    <origin xyz="0 ${torso_radius / 2} 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <link name="right_leg_link">
+    <visual>
+      <origin xyz="0 0 -${limb_length / 2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${limb_radius}" length="${limb_length}"/>
+      </geometry>
+      <material name="leg_black">
+        <color rgba="0.05 0.05 0.05 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="right_hip_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_leg_link"/>
+    <origin xyz="0 -${torso_radius / 2} 0.05" rpy="0 0 0"/>
+  </joint>
+</robot>
