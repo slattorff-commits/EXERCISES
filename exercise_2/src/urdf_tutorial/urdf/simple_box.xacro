@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="simple_box">
+  <xacro:property name="box_length" value="0.6"/>
+  <xacro:property name="box_width" value="0.35"/>
+  <xacro:property name="box_height" value="0.25"/>
+  <xacro:property name="red" value="0.2"/>
+  <xacro:property name="green" value="0.7"/>
+  <xacro:property name="blue" value="0.9"/>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${box_length} ${box_width} ${box_height}"/>
+      </geometry>
+      <material name="custom_color">
+        <color rgba="${red} ${green} ${blue} 1"/>
+      </material>
+    </visual>
+  </link>
+</robot>
