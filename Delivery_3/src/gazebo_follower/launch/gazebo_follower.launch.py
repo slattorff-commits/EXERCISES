@@ -91,37 +91,22 @@ def generate_launch_description():
         ],
     )
 
-    # 6. Bridge: Gazebo odometry → ROS (leader)
-    bridge_leader_odom = TimerAction(
+    # 6. Bridge: Gazebo world poses → ROS TFMessage
+    bridge_world_poses = TimerAction(
         period=7.0,
         actions=[
             Node(
                 package='ros_gz_bridge',
                 executable='parameter_bridge',
                 arguments=[
-                    '/model/leader_car/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+                    '/world/empty_class3/dynamic_pose/info@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
                 ],
                 output='screen',
             )
         ],
     )
 
-    # 7. Bridge: Gazebo odometry → ROS (follower)
-    bridge_follower_odom = TimerAction(
-        period=7.0,
-        actions=[
-            Node(
-                package='ros_gz_bridge',
-                executable='parameter_bridge',
-                arguments=[
-                    '/model/follower_car/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry',
-                ],
-                output='screen',
-            )
-        ],
-    )
-
-    # 8. Leader node (drives in circle)
+    # 7. Leader node (drives in circle)
     leader_node = TimerAction(
         period=8.0,
         actions=[
@@ -133,7 +118,7 @@ def generate_launch_description():
         ],
     )
 
-    # 9. Follower node (follows leader using odometry)
+    # 8. Follower node (follows leader using world poses)
     follower_node = TimerAction(
         period=9.0,
         actions=[
@@ -151,8 +136,7 @@ def generate_launch_description():
         spawn_follower,
         bridge_leader_cmd,
         bridge_follower_cmd,
-        bridge_leader_odom,
-        bridge_follower_odom,
+        bridge_world_poses,
         leader_node,
         follower_node,
     ])

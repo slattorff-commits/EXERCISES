@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Follower node: subscribes to leader and follower odometry from Gazebo,
-computes the relative position, and steers the follower toward the leader.
+Follower node: subscribes to world-frame poses from Gazebo via the
+dynamic_pose/info bridge and steers the follower toward the leader.
 """
 import math
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
+from tf2_msgs.msg import TFMessage
 
 
 class FollowerNode(Node):
@@ -16,11 +16,12 @@ class FollowerNode(Node):
 
         self.pub = self.create_publisher(Twist, '/follower/cmd_vel', 10)
 
+        # dynamic_pose/info bridged as TFMessage: index 0 = leader, 1 = follower
         self.create_subscription(
-            Odometry, '/model/leader_car/odometry', self.leader_odom_cb, 10
-        )
-        self.create_subscription(
-            Odometry, '/model/follower_car/odometry', self.follower_odom_cb, 10
+            TFMessage,
+            '/world/empty_class3/dynamic_pose/info',
+            self.pose_cb,
+            10,
         )
 
         self.leader_x = None
@@ -30,17 +31,22 @@ class FollowerNode(Node):
         self.follower_yaw = None
 
         self.timer = self.create_timer(0.1, self.on_timer)
-        self.get_logger().info('Follower node started – waiting for odometry')
+        self.get_logger().info('Follower node started – waiting for world poses')
 
-    def leader_odom_cb(self, msg: Odometry):
-        self.leader_x = msg.pose.pose.position.x
-        self.leader_y = msg.pose.pose.position.y
+    def pose_cb(self, msg: TFMessage):
+        if len(msg.transforms) < 2:
+            return
+        # Index 0 = leader_car (spawned first, entity id 10)
+        leader_tf = msg.transforms[0]
+        self.leader_x = leader_tf.transform.translation.x
+        self.leader_y = leader_tf.transform.translation.y
 
-    def follower_odom_cb(self, msg: Odometry):
-        self.follower_x = msg.pose.pose.position.x
-        self.follower_y = msg.pose.pose.position.y
-        qz = msg.pose.pose.orientation.z
-        qw = msg.pose.pose.orientation.w
+        # Index 1 = follower_car (spawned second, entity id 30)
+        follower_tf = msg.transforms[1]
+        self.follower_x = follower_tf.transform.translation.x
+        self.follower_y = follower_tf.transform.translation.y
+        qz = follower_tf.transform.rotation.z
+        qw = follower_tf.transform.rotation.w
         self.follower_yaw = 2.0 * math.atan2(qz, qw)
 
     def on_timer(self):
