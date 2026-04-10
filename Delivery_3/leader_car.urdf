@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<robot name="leader_car">
+
+  <!-- ================= BASE ================= -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="10.0"/>
+      <inertia ixx="0.5" ixy="0.0" ixz="0.0"
+               iyy="0.5" iyz="0.0"
+               izz="0.5"/>
+    </inertial>
+
+    <visual>
+      <geometry>
+        <box size="0.6 0.4 0.2"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.1 0.1 0.8 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.6 0.4 0.2"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <!-- ================= WHEEL MACRO ================= -->
+  <!-- We manually duplicate to keep it simple for students -->
+
+
+  <!-- ================= FRONT LEFT ================= -->
+  <link name="wheel_fl">
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.02" ixy="0" ixz="0"
+               iyy="0.02" iyz="0"
+               izz="0.02"/>
+    </inertial>
+
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_fl" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fl"/>
+    <origin xyz="0.2 0.18 -0.1" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <!-- ================= FRONT RIGHT ================= -->
+  <link name="wheel_fr">
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.02" ixy="0" ixz="0"
+               iyy="0.02" iyz="0"
+               izz="0.02"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_fr" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_fr"/>
+    <origin xyz="0.2 -0.18 -0.1" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <!-- ================= REAR LEFT ================= -->
+  <link name="wheel_rl">
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.02" ixy="0" ixz="0"
+               iyy="0.02" iyz="0"
+               izz="0.02"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_rl" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_rl"/>
+    <origin xyz="-0.2 0.18 -0.1" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <!-- ================= REAR RIGHT ================= -->
+  <link name="wheel_rr">
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.02" ixy="0" ixz="0"
+               iyy="0.02" iyz="0"
+               izz="0.02"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.08" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_rr" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_rr"/>
+    <origin xyz="-0.2 -0.18 -0.1" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <gazebo>
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>joint_fl</left_joint>
+      <left_joint>joint_rl</left_joint>
+      <right_joint>joint_fr</right_joint>
+      <right_joint>joint_rr</right_joint>
+      <wheel_separation>0.36</wheel_separation>
+      <wheel_radius>0.08</wheel_radius>
+      <topic>/leader/cmd_vel</topic>
+    </plugin>
+  </gazebo>
+
+</robot>
