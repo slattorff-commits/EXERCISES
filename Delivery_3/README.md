@@ -1,13 +1,5 @@
 # Delivery 3 — Gazebo Leader/Follower (Option B)
 
-## Overview
-
-Two differential-drive cars in Gazebo: a **leader** drives in circles, a **follower** tracks its position via world-frame poses and steers toward it using proportional control.
-
-## Screen Recording
-
-**[Loom Video Demo](https://www.loom.com/share/5f0250b083cf4be9bbf78da59ba91406)**
-
 ## Run Commands
 
 ```bash
@@ -41,15 +33,6 @@ ros2 run gazebo_follower leader_node
 # Terminal 5 — Follower (follows leader)
 ros2 run gazebo_follower follower_node
 ```
-
-## Source Code
-
-| File | Role |
-|------|------|
-| `src/gazebo_follower/gazebo_follower/leader_node.py` | Publisher — sends constant Twist to `/leader/cmd_vel` (circle pattern) |
-| `src/gazebo_follower/gazebo_follower/follower_node.py` | Subscriber — reads world poses, computes heading error, publishes to `/follower/cmd_vel` |
-| `src/gazebo_follower/launch/gazebo_follower.launch.py` | Launch file — starts Gazebo, spawns cars, bridges, and both nodes |
-| `leader_car.urdf` / `follower_car.urdf` | URDF models with DiffDrive plugin on separate cmd_vel topics |
 
 ## What Changed from Turtlesim to Gazebo
 
